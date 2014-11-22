@@ -1,0 +1,158 @@
+//TP 2
+//Probleme
+
+public abstract class Voiture implements Copyright{
+	private int numero;
+	private Marque marque;
+	private int age;
+	protected int ageMax;
+	private boolean isEpave;
+	public static int nbv;
+
+	public Voiture(int numero, Marque marque){
+		this.numero=numero;
+		this.marque=marque;
+		age=0;
+		isEpave=true;
+		nbv++;
+	}
+	
+	public void vieillir() throws EpaveException {
+		if (++age>=ageMax){
+			isEpave=true;
+			nbv--;
+			throw new EpaveException("Votre voiture ne passe plus le controle technique");
+			}
+	}
+	
+
+ 	public void vrombir(){ }
+	
+	public String toString(){
+		return numero+" : "+marque.toString()+","+age+","+ageMax;
+	}
+	
+	public boolean equals(Voiture v){
+		return marque.equals(v.getMarque()) && (age ==v.getAge());
+	
+	}
+
+	public int getAge(){
+		return age;
+	}
+	public Marque getMarque(){
+		return marque;
+	}
+
+	public boolean estDeLaMarque(Marque o){
+		return marque.equals(o);
+	}
+
+}
+
+
+/** permet de d?finir des types d'?l?ments 
+
+* pouvant tester leur appartenance ? une marque donn?e
+
+*/
+
+interface Copyright{ public boolean estDeLaMarque(Marque o); }
+
+
+
+public class Marque{
+			String nom;
+			public Marque(String m){
+				nom=m;
+			}
+	public boolean equals(Marque m){
+		return m.getNom()==nom;
+
+	}
+
+
+	public String getNom(){
+		return nom;
+	}
+}
+
+public class Citadine extends Voiture {
+	
+	public Citadine(int num, Marque marque){
+		super(num,marque);
+		ageMax=15;
+	}
+
+ 	public void vrombir(){System.out.println("boum");} 
+
+}
+
+public class Mono extends Voiture {
+	int capacite;
+	
+	public Mono(int num, Marque marque, int capacite){
+		super(num,marque);
+		ageMax=20;
+		this.capacite=capacite;
+	}
+
+ 
+	public void vrombir(){System.out.println("vroum vroum");} 
+}
+
+public class EpaveException extends Exception{
+
+	public EpaveException(String e){
+		super(e);
+	}
+}
+
+public class Test{
+
+	public static void afficher(Voiture v){
+		System.out.println("voiture");
+	}
+	public static void afficher(Mono m){
+		System.out.println("Mono");
+	}
+
+	
+
+	public static void main(String[] args){
+	
+		class Mini extends Citadine{
+			int portes;
+			public Mini(int p, int a, Marque m){
+				super(a,m);
+				portes=p;
+			}
+		}
+	try{
+	
+		Marque mercedes = new Marque("Mercedes");
+		Marque ferrari = new Marque("Ferrari");		
+		Voiture[] o = new Voiture[3];
+		o[0]=new Citadine(25,mercedes);
+		o[1]=new Mono(12,ferrari,8);
+		o[2]=new Mini(3,12,ferrari);
+		System.out.println(o[1].estDeLaMarque(ferrari));//true
+		o[0].vrombir();//boum
+		afficher(o[0]);//voiture
+		o[1].vrombir();//vroum vroum
+		afficher(o[1]);//voiture
+		o[2].vrombir();//boum
+		afficher(o[2]);//voiture
+		Mono casse = new Mono(19, ferrari,8){ public void vrombir(){System.out.println("bling bling");}};
+		casse.vrombir();//bling bling
+		afficher(casse);//Mono
+		for (int i=0;i<25;i++){
+			System.out.println("etape"+i);
+			casse.vieillir();
+		}
+	}catch(EpaveException e){System.out.println(e.getMessage());}
+	
+	}
+
+
+}
